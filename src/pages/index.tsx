@@ -1,5 +1,6 @@
 import { useState, useEffect } from 'react'
 import { DateString, UsageSummary } from '@/shared'
+import dayjs from 'dayjs'
 
 import {
   Bar,
@@ -27,6 +28,12 @@ import {
   Typography,
   CardContent,
   TableContainer,
+  CircularProgress,
+  FormControl,
+  InputLabel,
+  Select,
+  MenuItem,
+  SelectChangeEvent,
 } from '@mui/material'
 
 import { styled } from '@mui/material/styles'
@@ -61,21 +68,27 @@ const EnergyUsageDashboard: React.FC = () => {
   const [serverResp, setServerResp] = useState<UsageSummary | undefined>(
     undefined
   )
+  const [loadingData, setLoadingData] = useState(false)
+  const [daysToShow, setDaysToShow] = useState(5)
 
   const handleTabChange = (event: React.SyntheticEvent, newValue: number) => {
     setTabValue(newValue)
   }
 
   useEffect(() => {
+    setLoadingData(true)
     ;(async () => {
       const resp = await fetch('/api/usage')
       const data: UsageSummary = await resp.json()
       setServerResp(data)
+      setLoadingData(false)
     })()
   }, [])
+  console.log('server', serverResp)
+  const visibleDays = serverResp?.days.slice(-daysToShow) ?? []
 
   // Transform data for chart
-  const chartData = serverResp?.days.map((day) => ({
+  const chartData = visibleDays.map((day) => ({
     kWh: day.totalKwh,
     date: formatDate(day.date),
     peak: day.usagePeak?.kw || 0,
@@ -89,8 +102,21 @@ const EnergyUsageDashboard: React.FC = () => {
       >
         Energy Usage Dashboard
       </Typography>
+      {/* Loader */}
+      {loadingData && (
+        <Box
+          sx={{
+            display: 'flex',
+            justifyContent: 'center',
+            alignItems: 'center',
+            minHeight: 200,
+          }}
+        >
+          <CircularProgress />
+        </Box>
+      )}
 
-      {serverResp && (
+      {!loadingData && serverResp && (
         <>
           <SummaryCard>
             <CardContent>
@@ -117,6 +143,26 @@ const EnergyUsageDashboard: React.FC = () => {
               </Grid2>
             </CardContent>
           </SummaryCard>
+          {/* Date window selector */}
+          <Box sx={{ mb: 3, display: 'flex', justifyContent: 'flex-end' }}>
+            <FormControl size="small" sx={{ minWidth: 120 }}>
+              <InputLabel id="days-select-label">Days</InputLabel>
+              <Select
+                labelId="days-select-label"
+                value={daysToShow}
+                label="Days"
+                onChange={(event: SelectChangeEvent<number>) => {
+                  setDaysToShow(Number(event.target.value))
+                }}
+              >
+                {[3, 5, 7, 14, serverResp.days.length].map((n) => (
+                  <MenuItem key={n} value={n}>
+                    {n === serverResp.days.length ? 'All' : n}
+                  </MenuItem>
+                ))}
+              </Select>
+            </FormControl>
+          </Box>
 
           <Tabs
             value={tabValue}
@@ -135,13 +181,19 @@ const EnergyUsageDashboard: React.FC = () => {
                   Daily Energy Consumption
                 </Typography>
                 <Box sx={{ height: 350, width: '100%' }}>
-                  <ResponsiveContainer>
+                  <ResponsiveContainer width="100%" height={400}>
                     <BarChart
                       data={chartData}
-                      margin={{ top: 20, right: 30, left: 20, bottom: 5 }}
+                      margin={{ top: 20, right: 30, left: 20, bottom: 60 }}
                     >
                       <CartesianGrid strokeDasharray="3 3" />
-                      <XAxis dataKey="date" interval={2} />
+                      <XAxis
+                        dataKey="date"
+                        angle={daysToShow > 14 ? -90 : 0}
+                        textAnchor="end"
+                        interval={3}
+                        tickFormatter={(date) => dayjs(date).format('MMM D')}
+                      />
                       <YAxis
                         label={{
                           value: 'kWh',
@@ -192,7 +244,7 @@ const EnergyUsageDashboard: React.FC = () => {
                       </TableRow>
                     </TableHead>
                     <TableBody>
-                      {serverResp.days.map((day) => (
+                      {visibleDays.map((day) => (
                         <TableRow key={day.date} hover>
                           <TableCell>{formatDate(day.date)}</TableCell>
                           <TableCell align="right">
