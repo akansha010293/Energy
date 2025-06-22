@@ -1,60 +1,77 @@
-# Amber Coding Challenge
+⚡ Energy Usage Dashboard – Built by Akansha Gupta
+This project is a full-stack web application that displays a household's electricity consumption using data sourced from smart meters. It provides daily usage summaries, peak consumption insights, and an interactive UI to explore usage patterns across custom date ranges.
 
-Hello and welcome to the Amber coding challenge. We've chosen this task to be broadly representative of the kind of work you would be doing if you join the team. Our intention is that this would take a maximum 4 hours of your time.
+I built this project to showcase my ability to integrate backend data processing with a responsive, user-friendly frontend using TypeScript, React, and Node.js.
 
-Your task is to implement the backend component of a customer's energy use dashboard, as well as making some updates to the dashboard UI.
+🌟 Features
+✅ Backend
+Parses and processes energy usage data from a CSV file.
 
-## What we're assessing for
+Calculates:
 
-The code challenge will be reviewed by two of our engineers before proceeding to the technical interview, where we will use it as a springboard to discuss technical decisions. All candidates perform the same test regardless of experience level, but expectations on polish and quality of discussion on underlying approach in the follow up interview scale with seniority and experience.
+Total kWh consumption over the selected time period.
 
-If the technologies used in this challenge are new to you, we will take into account what you have shared with us about your experience in the pre-screening interview and on your resume, and will mark accordingly. We don't expect someone with little-to-no experience of, say TypeScript, to be producing exceptionally well written TypeScript or be able to fake it in a short amount of time, but we have set up this challenge so that you shouldn't be disadvantaged if that is the case. So even if you have little-to-no experience of TypeScript, React or Node, please attempt the challenge using them.
+Average daily consumption and average hourly usage per day.
 
-### The Task
+Peak usage hour for each day, showing when the highest demand occurred.
 
-#### Backend
+Exposes an API endpoint to serve the processed data to the frontend.
 
-- In `src/pages/api/usage.ts` comment/uncomment the relevant code to switch from sample to real data
-- You must implement all compulsory fields on `UsageSummary` (totals and averages for varying time horizons)
-- Bonus points for also calculating the optional field `UsagePeak`. [What is peak demand](https://web.archive.org/web/20220201052650/https://www.enertiv.com/resources/faq/what-is-peak-demand) can help you understand the underlying concept there
+✅ Frontend
+Displays a detailed usage summary and daily breakdown.
 
-#### Frontend
+Allows users to filter the data by number of days (e.g., 3, 5, or 7).
 
-In `src/pages/index.tsx` you must implement the following changes:
+Includes a loading spinner for improved user experience during data fetch.
 
-- Add a basic spinner/loader state to your application when it is loading data from the backend
-- Add a way to vary/change the date window being displayed by the UI based off the data that has been returned. E.g only display 3 days worth of data, or 5.
+Responsive and clean UI using modern React best practices.
 
-#### Other tips
+🛠️ Tech Stack
+Frontend: React, TypeScript, Next.js
 
-- Good tests carry a lot of bonus points here
-- Information on the CSV file format can be found at [github.com/charliedotau/Smart-Meter-File-Format-Examples-Aus](https://github.com/charliedotau/Smart-Meter-File-Format-Examples-Aus). Short version: ignore the first 3 columns, column 4 is the date, and columns 6+ are the kwH used in each half hour window.
-- Keep an eye out for the nominated units on data fields. [kW !== kWh](https://www.solarquotes.com.au/blog/kw-and-kwh-what-is-the-difference/)
-- There's no right or wrong answer on classes vs functional style, but it's important you have some kind of decomposition and organisational approach you can speak to in the follow up interview
+Backend: Node.js (via Next.js API routes)
 
-## General Tips
+Data Handling: CSV parsing with custom utility functions
 
-- Don't try to boil the ocean and show off across every aspect of the challenge, get it working end to end and then put your personal shine into one area. We want to be respectful of your time so pick a particular domain and explicitly tell us alongside your submission where you put your focus.
-- Once the minimum requirements are met there are no right or wrong answers, instead this challenge is used as a conversation starter about your abilities in a follow up interview.
-- Feel free to use 3rd party libraries. Ensure you choose libraries you're confident will install and run cleanly on on the reviewer's laptop without intervention. We don't want to see engineers reinventing the wheel, but conversely we need to see enough of your own code to get a sense of your personal style.
-- The challenge is provided to you as a tarred up git repo, returning it the same way with your own commits showing work in progress is appreciated
-- Adding tests is not required but is appreciated, especially if you're trying to highlight more "backend" like skills
-- You are free to add, remove, or change libraries as you see fit. We provided a relatively full skeleton of build and testing tools as a convenience to minimise unnecessary time spent wrestling npm packages
+Testing: Jest
 
-  **_Please do not upload your submission as a public git repository._**
+Styling: CSS Modules / Plain CSS (easily swappable with Tailwind or similar)
 
-# Dev Process
+📂 CSV Data Format
+The CSV data represents half-hourly electricity usage.
 
-In the project directory, you can run:
+Format:
 
-### `npm run dev`
+Column 4: Date
 
-Runs the app & api/server in the development mode.<br>
-Open [http://localhost:3000](http://localhost:3000) to view it in the browser.
+Columns 6 onward: kWh readings per 30-minute interval
 
-The page will reload if you make edits.<br>
-You will also see any lint errors in the console.
+Example snippet:
 
-### `npm run test`
+swift
+Copy
+Edit
+NMI,Date,Read Type,...,01/01/2021,01/01/2021,...
+ABC123,01/01/2021,A,...,0.122,0.140,...
+🚀 Getting Started
+1. Install dependencies
+bash
+Copy
+Edit
+npm install
+2. Run the development server
+bash
+Copy
+Edit
+npm run dev
+Open http://localhost:3000 to view it in the browser.
 
-Runs all the tests
+3. Run tests
+bash
+Copy
+Edit
+npm run test
+
+👩‍💻 Author
+Akansha Gupta
+Frontend Developer with a strong interest in full-stack development, data-driven UI, and creating user-centric applications.
